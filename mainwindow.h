@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QListWidgetItem>
+#include <QPushButton>
 
 namespace Ui {
 class MainWindow;
