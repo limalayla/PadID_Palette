@@ -17,7 +17,7 @@ public:
     ~MainWindow();
 
 public slots:
-    void activateColors(QListWidgetItem*);
+    void MajCodeCouleur(QListWidgetItem*);
 
 private:
     Ui::MainWindow *ui;

@@ -157,7 +157,7 @@
    </widget>
    <widget class="QListWidget" name="listeEncodage">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -166,6 +166,15 @@
       <width>160</width>
       <height>150</height>
      </rect>
+    </property>
+    <property name="statusTip">
+     <string/>
+    </property>
+    <property name="whatsThis">
+     <string/>
+    </property>
+    <property name="accessibleName">
+     <string/>
     </property>
    </widget>
    <widget class="QTextEdit" name="nomCouleur">
@@ -241,7 +250,7 @@
      <x>0</x>
      <y>0</y>
      <width>750</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFichier">
