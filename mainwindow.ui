@@ -28,6 +28,9 @@
   <property name="windowTitle">
    <string>PadID_Palette</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QListWidget" name="listeClient">
     <property name="geometry">
@@ -210,9 +213,9 @@
      <string>Valider</string>
     </property>
    </widget>
-   <widget class="QWidget" name="widget" native="true">
+   <widget class="QWidget" name="widget_CouleurCourante" native="true">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -221,6 +224,9 @@
       <width>75</width>
       <height>75</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: rgb(0,0,0)</string>
     </property>
    </widget>
    <widget class="QWidget" name="gridLayoutWidget">
@@ -232,7 +238,18 @@
       <height>151</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout"/>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QPushButton" name="btn_couleur">
+       <property name="styleSheet">
+        <string notr="true">background: rgb(214,61,23)</string>
+       </property>
+       <property name="text">
+        <string>bla</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -241,7 +258,7 @@
      <x>0</x>
      <y>0</y>
      <width>750</width>
-     <height>20</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFichier">

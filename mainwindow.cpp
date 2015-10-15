@@ -7,6 +7,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     QObject::connect(ui->listeClient, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(activateColors(QListWidgetItem*)));
+    QObject::connect(ui->btn_couleur,SIGNAL(clicked()), this, SLOT(afficher_CouleurCourante()));
+
+
 }
 
 MainWindow::~MainWindow()
@@ -15,3 +18,9 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::activateColors(QListWidgetItem* ) {}
+
+void MainWindow::afficher_CouleurCourante()
+{
+    QString StyleSheetParent = ui->btn_couleur->styleSheet();
+    ui->widget_CouleurCourante->setStyleSheet(StyleSheetParent);
+}
