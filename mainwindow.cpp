@@ -13,3 +13,5 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+void MainWindow::activateColors(QListWidgetItem* ii) {}
