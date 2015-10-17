@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QListWidgetItem>
+#include <QMessageBox>
+#include <QColor>
 
 namespace Ui {
 class MainWindow;
@@ -18,6 +20,7 @@ public:
 
 public slots:
     void activateColors(QListWidgetItem*);
+    void MajCodeCouleur(QListWidgetItem*);
 
 private:
     Ui::MainWindow *ui;
