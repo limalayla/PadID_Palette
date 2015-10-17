@@ -5,6 +5,7 @@
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QColor>
+#include <QPushButton>
 
 namespace Ui {
 class MainWindow;
@@ -21,6 +22,7 @@ public:
 public slots:
     void activateColors(QListWidgetItem*);
     void MajCodeCouleur(QListWidgetItem*);
+    void afficher_CouleurCourante();
 
 private:
     Ui::MainWindow *ui;

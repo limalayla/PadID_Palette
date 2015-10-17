@@ -28,6 +28,9 @@
   <property name="windowTitle">
    <string>PadID_Palette</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QListWidget" name="listeClient">
     <property name="geometry">
@@ -219,9 +222,9 @@
      <string>Valider</string>
     </property>
    </widget>
-   <widget class="QWidget" name="widget" native="true">
+   <widget class="QWidget" name="widget_CouleurCourante" native="true">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -231,18 +234,54 @@
       <height>75</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background: rgb(0,0,0)</string>
+    </property>
    </widget>
-   <widget class="QWidget" name="gridLayoutWidget">
+   <widget class="QGroupBox" name="grpb_listeCouleur">
     <property name="geometry">
      <rect>
-      <x>219</x>
+      <x>230</x>
       <y>90</y>
-      <width>151</width>
+      <width>161</width>
       <height>151</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout"/>
+    <property name="title">
+     <string>Liste Des Couleurs</string>
+    </property>
+    <widget class="QPushButton" name="btn_couleur">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>20</y>
+       <width>161</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: rgb(214,61,23)</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </widget>
+   <zorder>listeClient</zorder>
+   <zorder>rechercheClient</zorder>
+   <zorder>btn_clientAdd</zorder>
+   <zorder>btn_clientDel</zorder>
+   <zorder>btn_clientProp</zorder>
+   <zorder>btn_colorAdd</zorder>
+   <zorder>btn_colorProp</zorder>
+   <zorder>btn_colorDel</zorder>
+   <zorder>listeEncodage</zorder>
+   <zorder>nomCouleur</zorder>
+   <zorder>descCouleur</zorder>
+   <zorder>btn_validation</zorder>
+   <zorder>widget_CouleurCourante</zorder>
+   <zorder>btn_couleur</zorder>
+   <zorder>grpb_listeCouleur</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
