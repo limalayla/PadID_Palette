@@ -28,6 +28,7 @@ public slots:
     void MajCodeCouleur(QListWidgetItem*);
     void afficher_CouleurCourante();
     void ajouterClient();
+    void ajouterCouleur();
 
 private:
     Ui::MainWindow *ui;

@@ -143,6 +143,11 @@ QVector<Couleur> Client::getCol() const
 
 void Client::addColor(const Couleur& c)
 {
+    qDebug() << "Ajout couleur : {" << c.col.red()   << "-"
+                                    << c.col.green() << "-"
+                                    << c.col.blue()  << "} "
+                                    << c.getNom()    << "("
+                                    << c.getDesc()   << ")";
     m_colorlist.push_back(c);
 }
 

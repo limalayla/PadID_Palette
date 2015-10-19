@@ -15,10 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     client.cpp \
-    couleur.cpp
+    couleur.cpp \
+    colorwindowadd.cpp
 
 HEADERS  += mainwindow.h \
     client.h \
-    couleur.h
+    couleur.h \
+    colorwindowadd.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    colorwindowadd.ui

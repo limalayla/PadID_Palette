@@ -41,16 +41,6 @@
       <height>300</height>
      </rect>
     </property>
-    <item>
-     <property name="text">
-      <string>Client 1</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Client 2</string>
-     </property>
-    </item>
    </widget>
    <widget class="QLineEdit" name="rechercheClient">
     <property name="geometry">
@@ -267,21 +257,6 @@
      </property>
     </widget>
    </widget>
-   <zorder>listeClient</zorder>
-   <zorder>rechercheClient</zorder>
-   <zorder>btn_clientAdd</zorder>
-   <zorder>btn_clientDel</zorder>
-   <zorder>btn_clientProp</zorder>
-   <zorder>btn_colorAdd</zorder>
-   <zorder>btn_colorProp</zorder>
-   <zorder>btn_colorDel</zorder>
-   <zorder>listeEncodage</zorder>
-   <zorder>nomCouleur</zorder>
-   <zorder>descCouleur</zorder>
-   <zorder>btn_validation</zorder>
-   <zorder>widget_CouleurCourante</zorder>
-   <zorder>btn_couleur</zorder>
-   <zorder>grpb_listeCouleur</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -289,7 +264,7 @@
      <x>0</x>
      <y>0</y>
      <width>750</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFichier">

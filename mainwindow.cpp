@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->listeClient, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(activateColors(QListWidgetItem*)));
     QObject::connect(ui->btn_couleur, SIGNAL(clicked()), this, SLOT(afficher_CouleurCourante()));
     QObject::connect(ui->btn_clientAdd, SIGNAL(clicked()), this, SLOT(ajouterClient()));
+    QObject::connect(ui->btn_colorAdd, SIGNAL(clicked()), this, SLOT(ajouterCouleur()));
 
     profileRep = new QDir("profiles");
     if (!profileRep->exists()) {
@@ -92,6 +93,14 @@ void MainWindow::afficher_CouleurCourante()
     ui->widget_CouleurCourante->setStyleSheet(StyleSheetParent);
 }
 
+
+void MainWindow::ajouterCouleur()
+{
+    Couleur* newCol = new Couleur();
+    int indexClientSelectionne = ui->listeClient->currentIndex().row();
+
+    m_clients[indexClientSelectionne].addColor(*newCol);
+}
 
 void MainWindow::ajouterClient()
 {
