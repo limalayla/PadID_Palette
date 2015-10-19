@@ -23,13 +23,47 @@ MainWindow::MainWindow(QWidget *parent) :
 
     */
     QObject::connect(ui->listeClient, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(activateColors(QListWidgetItem*)));
-    QObject::connect(ui->btn_couleur,SIGNAL(clicked()), this, SLOT(afficher_CouleurCourante()));
+    QObject::connect(ui->btn_couleur, SIGNAL(clicked()), this, SLOT(afficher_CouleurCourante()));
+    QObject::connect(ui->btn_clientAdd, SIGNAL(clicked()), this, SLOT(ajouterClient()));
 
+    profileRep = new QDir("profiles");
+    if (!profileRep->exists()) {
+        profileRep->mkpath(".");
+    }
+    else qDebug() << profileRep->absolutePath() << "existe et contient " << profileRep->count()-2 << " fichiers";
 
+    Client* c;
+    /* c->setNom("Jesuis Untest");
+     c->setFP(profileRep->path() + "test");
+     c->addColor(Couleur("first", "desc", 0, 0, 0));
+
+     m_clients.push_back(*c);
+     ui->listeClient->addItem(m_clients[qMax(0, m_clients.size()-1)].getNom());*/
+
+    for(uint i= 0; i< profileRep->count(); i++)
+    {
+        QString filePath = profileRep->entryList().at(i);
+        qDebug() << i << " : " << filePath;
+
+        if(filePath != "." && filePath != "..")
+        {
+            c = Client::loadFromFile(profileRep->absoluteFilePath(filePath));
+            if(c != NULL)
+            {
+                m_clients.push_back(*c);
+                ui->listeClient->addItem(m_clients.last().getNom());
+            }
+        }
+    }
 }
 
 MainWindow::~MainWindow()
 {
+    for(uint i= 0; i< qAbs(m_clients.size()); i++)
+    {
+        Client::saveToFile(m_clients[i]);
+    }
+
     delete ui;
 }
 
@@ -56,4 +90,21 @@ void MainWindow::afficher_CouleurCourante()
 {
     QString StyleSheetParent = ui->btn_couleur->styleSheet();
     ui->widget_CouleurCourante->setStyleSheet(StyleSheetParent);
+}
+
+
+void MainWindow::ajouterClient()
+{
+    QString nom = QInputDialog::getText(this, "Nouveau Client", "Nom du nouveau client : ");
+
+    QString filePath = profileRep->path() + "/" + nom.toLower();
+    QMessageBox::information(this, "", nom + " " + filePath);
+
+    addClient(Client(nom, filePath));
+}
+
+bool MainWindow::addClient(const Client& c)
+{
+    m_clients.push_back(c);
+    ui->listeClient->addItem(c.getNom());
 }
