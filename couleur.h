@@ -10,7 +10,6 @@ public:
     Couleur(const QString&, const QString&, quint8, quint8, quint8);
     Couleur(const Couleur&);
 
-    QColor  col;
     QString getNom () const;
     QString getDesc() const;
     void    setNom (const QString&);
@@ -19,6 +18,9 @@ public:
 private:
     QString m_nom;
     QString m_desc;
+
+public:
+    QColor  col;
 
 };
 

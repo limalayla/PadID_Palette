@@ -36,8 +36,8 @@ public:
 
 private:
     QString m_nom;
-    QVector<Couleur> m_colorlist;
     QString m_filePath;
+    QVector<Couleur> m_colorlist;
     Couleur* getCouleur(const QStringList&);
 };
 

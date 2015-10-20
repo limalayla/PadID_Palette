@@ -8,6 +8,7 @@
 #include <QInputDialog>
 
 #include "client.h"
+#include "colorwindowadd.h"
 
 namespace Ui {
 class MainWindow;
@@ -21,7 +22,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    bool addClient(const Client&);
+    void addClient(const Client&);
 
 public slots:
     void activateColors(QListWidgetItem*);
@@ -29,11 +30,15 @@ public slots:
     void afficher_CouleurCourante();
     void ajouterClient();
     void ajouterCouleur();
+    void getCouleur();
 
 private:
     Ui::MainWindow *ui;
     QDir* profileRep;
     QVector<Client> m_clients;
+
+    ColorWindowAdd* winAddCol;
+    Couleur* tmp;
 };
 
 #endif // MAINWINDOW_H

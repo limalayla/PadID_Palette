@@ -17,7 +17,7 @@ QString Client::toSavableFormat() const
 {
     QString res = m_nom + "\n";
 
-    for(uint i= 0; i< qAbs(m_colorlist.size()); i++)
+    for(int i= 0; i< m_colorlist.size(); i++)
     {
         res += QString::number(m_colorlist[i].col.red())   + Client::separator;
         res += QString::number(m_colorlist[i].col.green()) + Client::separator;
@@ -27,7 +27,7 @@ QString Client::toSavableFormat() const
     }
 
     if(m_colorlist.size() > 0) res = res.left(res.size()-1);
-
+    QMessageBox::information(NULL, "", res);
     return res;
 }
 
@@ -159,7 +159,10 @@ bool Client::saveToFile(const Client& c)
     tmpFile.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text);
 
     if(!tmpFile.exists())
+    {
         QMessageBox::warning(NULL, "", "Fichier impossible à créer");
+        return false;
+    }
 
     QTextStream out(&tmpFile);
 
@@ -167,4 +170,5 @@ bool Client::saveToFile(const Client& c)
 
     out << c.toSavableFormat();
     tmpFile.close();
+    return true;
 }

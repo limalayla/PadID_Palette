@@ -6,6 +6,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+/*
+    winAddCol = new ColorWindowAdd(this);
+    winAddCol->show();*/
+
     /*On prend le nombre de couleur dont dispose le client pour faire un tableau de meme taille
     QPushButton btn_couleur[nbCouleurClient];
     QPushButton btn_couleur[2];
@@ -41,31 +45,41 @@ MainWindow::MainWindow(QWidget *parent) :
      m_clients.push_back(*c);
      ui->listeClient->addItem(m_clients[qMax(0, m_clients.size()-1)].getNom());*/
 
+    profileRep->setFilter(QDir::Files);
     for(uint i= 0; i< profileRep->count(); i++)
     {
         QString filePath = profileRep->entryList().at(i);
         qDebug() << i << " : " << filePath;
 
-        if(filePath != "." && filePath != "..")
-        {
+        //if(filePath != "." && filePath != "..")
+        //{
             c = Client::loadFromFile(profileRep->absoluteFilePath(filePath));
             if(c != NULL)
             {
                 m_clients.push_back(*c);
                 ui->listeClient->addItem(m_clients.last().getNom());
+                delete c;
             }
-        }
+        //}
     }
 }
 
 MainWindow::~MainWindow()
 {
-    for(uint i= 0; i< qAbs(m_clients.size()); i++)
+    //profileRep.setNameFilters(QStringList() << "*.*");
+
+    foreach(QString dirFile, profileRep->entryList())
+    {
+        profileRep->remove(dirFile);
+    }
+
+    for(int i= 0; i< qAbs(m_clients.size()); i++)
     {
         Client::saveToFile(m_clients[i]);
     }
 
     delete ui;
+    //if(winAddCol != NULL) delete winAddCol;
 }
 
 void MainWindow::activateColors(QListWidgetItem* item)
@@ -77,7 +91,7 @@ void MainWindow::activateColors(QListWidgetItem* item)
     MajCodeCouleur(item);
 }
 
-void MainWindow::MajCodeCouleur(QListWidgetItem* item)
+void MainWindow::MajCodeCouleur(QListWidgetItem*)
 {
     ui->listeEncodage->setEnabled(true);
     ui->listeEncodage->clear();
@@ -96,10 +110,8 @@ void MainWindow::afficher_CouleurCourante()
 
 void MainWindow::ajouterCouleur()
 {
-    Couleur* newCol = new Couleur();
-    int indexClientSelectionne = ui->listeClient->currentIndex().row();
-
-    m_clients[indexClientSelectionne].addColor(*newCol);
+    winAddCol = new ColorWindowAdd(this);
+    winAddCol->show();
 }
 
 void MainWindow::ajouterClient()
@@ -112,8 +124,23 @@ void MainWindow::ajouterClient()
     addClient(Client(nom, filePath));
 }
 
-bool MainWindow::addClient(const Client& c)
+void MainWindow::addClient(const Client& c)
 {
     m_clients.push_back(c);
     ui->listeClient->addItem(c.getNom());
+}
+
+void MainWindow::getCouleur()
+{
+    qDebug() << "Byebye";
+    Couleur* newCol = NULL;
+    if(winAddCol != NULL) newCol = winAddCol->getCouleur();
+
+    if(newCol != NULL)
+    {
+        int indexClientSelectionne = ui->listeClient->currentIndex().row();
+        m_clients[indexClientSelectionne].addColor(*newCol);
+
+        delete newCol;
+    }
 }
