@@ -75,6 +75,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="btn_clientDel">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>60</x>
@@ -86,8 +89,14 @@
     <property name="text">
      <string>X</string>
     </property>
+    <property name="shortcut">
+     <string>Ctrl+W</string>
+    </property>
    </widget>
    <widget class="QPushButton" name="btn_clientProp">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>120</x>
@@ -210,6 +219,9 @@
     </property>
     <property name="text">
      <string>Valider</string>
+    </property>
+    <property name="shortcut">
+     <string>Ctrl+C</string>
     </property>
    </widget>
    <widget class="QWidget" name="widget_CouleurCourante" native="true">

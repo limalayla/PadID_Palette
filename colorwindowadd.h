@@ -18,7 +18,7 @@ public:
     explicit ColorWindowAdd(QWidget *parent = 0);
     explicit ColorWindowAdd(Couleur& c, QWidget *parent = 0);
     ~ColorWindowAdd();
-    void majCouleur(int, uint);
+    void majCouleur();
 
 public slots:
     void setTextRed(int);
@@ -33,8 +33,8 @@ public slots:
 
 private:
     Ui::ColorWindowAdd *ui;
-    Couleur* reponse;
     void init(QWidget *parent);
+    quint8 r, g, b;
 };
 
 #endif // COLORWINDOWADD_H

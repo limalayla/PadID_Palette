@@ -28,7 +28,10 @@ public slots:
     void activateColors(QListWidgetItem*);
     void MajCodeCouleur(QListWidgetItem*);
     void afficher_CouleurCourante();
+
     void ajouterClient();
+    void supprimClient();
+
     void ajouterCouleur();
     void getCouleur();
 
@@ -38,7 +41,6 @@ private:
     QVector<Client> m_clients;
 
     ColorWindowAdd* winAddCol;
-    Couleur* tmp;
 };
 
 #endif // MAINWINDOW_H

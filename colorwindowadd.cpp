@@ -3,15 +3,15 @@
 
 ColorWindowAdd::ColorWindowAdd(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::ColorWindowAdd), reponse(new Couleur())
+    ui(new Ui::ColorWindowAdd)
 {
     init(parent);
-    majCouleur(0, 3);
+    majCouleur();
 }
 
 ColorWindowAdd::ColorWindowAdd(Couleur& c, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::ColorWindowAdd), reponse(new Couleur())
+    ui(new Ui::ColorWindowAdd)
 {
     init(parent);
 
@@ -26,14 +26,13 @@ ColorWindowAdd::ColorWindowAdd(Couleur& c, QWidget *parent) :
     ui->slider_vert->setValue(c.col.green());
     ui->slider_bleu->setValue(c.col.blue());
 
-    majCouleur(0, 3);
+    majCouleur();
 }
 
 ColorWindowAdd::~ColorWindowAdd()
 {
     qDebug() << "FERME";
     delete ui;
-    delete reponse;
 }
 
 void ColorWindowAdd::init(QWidget *parent)
@@ -55,26 +54,24 @@ void ColorWindowAdd::init(QWidget *parent)
 
     QObject::connect(ui->btn_ok, SIGNAL(clicked()), parent, SLOT(getCouleur()));
     QObject::connect(ui->btn_ok, SIGNAL(clicked()), this, SLOT(close()));
+    QObject::connect(ui->btn_annuler, SIGNAL(clicked()), this, SLOT(close()));
 
-    ui->widget->setPalette(QPalette(reponse->col));
+    majCouleur();
 }
 
-void ColorWindowAdd::setTextRed  (int value) { ui->in_rouge->setText(QString::number(value)); majCouleur(value, 0); }
-void ColorWindowAdd::setTextGreen(int value) { ui->in_vert->setText(QString::number(value));  majCouleur(value, 1); }
-void ColorWindowAdd::setTextBlue (int value) { ui->in_bleu->setText(QString::number(value));  majCouleur(value, 2); }
+void ColorWindowAdd::setTextRed  (int value) { r = value; ui->in_rouge->setText(QString::number(r)); majCouleur(); }
+void ColorWindowAdd::setTextGreen(int value) { g = value; ui->in_vert->setText(QString::number(g));  majCouleur(); }
+void ColorWindowAdd::setTextBlue (int value) { b = value; ui->in_bleu->setText(QString::number(b));  majCouleur(); }
 
-void ColorWindowAdd::setSlidRed  (QString value) { ui->slider_rouge->setValue(value.toInt()); majCouleur(value.toInt(), 0); }
-void ColorWindowAdd::setSlidGreen(QString value) { ui->slider_vert->setValue(value.toInt());  majCouleur(value.toInt(), 1); }
-void ColorWindowAdd::setSlidBlue (QString value) { ui->slider_bleu->setValue(value.toInt());  majCouleur(value.toInt(), 2); }
+void ColorWindowAdd::setSlidRed  (QString value) { r = value.toInt(); ui->slider_rouge->setValue(r); majCouleur(); }
+void ColorWindowAdd::setSlidGreen(QString value) { g = value.toInt(); ui->slider_vert->setValue(g);  majCouleur(); }
+void ColorWindowAdd::setSlidBlue (QString value) { b = value.toInt(); ui->slider_bleu->setValue(b);  majCouleur(); }
 
-void ColorWindowAdd::majCouleur(int value, uint rgb)
+void ColorWindowAdd::majCouleur()
 {
-    if(rgb == 0) reponse->col.setRed(value);
-    if(rgb == 1) reponse->col.setGreen(value);
-    if(rgb == 2) reponse->col.setBlue(value);
-
     QPalette Pal(palette());
-    Pal.setColor(QPalette::Background, reponse->col);
+
+    Pal.setColor(QPalette::Background, QColor(r, g, b));
     ui->widget->setAutoFillBackground(true);
     ui->widget->setPalette(Pal);
     ui->widget->show();
@@ -82,9 +79,6 @@ void ColorWindowAdd::majCouleur(int value, uint rgb)
 
 Couleur* ColorWindowAdd::getCouleur()
 {
-    reponse->setNom(ui->in_titre->text());
-    reponse->setDesc(ui->in_desc->toPlainText());
-
-    return reponse;
+    return new Couleur(ui->in_titre->text(), ui->in_desc->toPlainText(), r, g, b);
 }
 

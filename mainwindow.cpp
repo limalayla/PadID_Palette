@@ -6,6 +6,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    winAddCol = NULL;
+
+    profileRep = new QDir("profiles");
+    if (!profileRep->exists()) {
+        profileRep->mkpath(".");
+    }
 /*
     winAddCol = new ColorWindowAdd(this);
     winAddCol->show();*/
@@ -28,54 +34,42 @@ MainWindow::MainWindow(QWidget *parent) :
     */
     QObject::connect(ui->listeClient, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(activateColors(QListWidgetItem*)));
     QObject::connect(ui->btn_couleur, SIGNAL(clicked()), this, SLOT(afficher_CouleurCourante()));
+
     QObject::connect(ui->btn_clientAdd, SIGNAL(clicked()), this, SLOT(ajouterClient()));
+    QObject::connect(ui->btn_clientDel, SIGNAL(clicked()), this, SLOT(supprimClient()));
+
     QObject::connect(ui->btn_colorAdd, SIGNAL(clicked()), this, SLOT(ajouterCouleur()));
 
-    profileRep = new QDir("profiles");
-    if (!profileRep->exists()) {
-        profileRep->mkpath(".");
-    }
-    else qDebug() << profileRep->absolutePath() << "existe et contient " << profileRep->count()-2 << " fichiers";
 
-    Client* c;
-    /* c->setNom("Jesuis Untest");
-     c->setFP(profileRep->path() + "test");
-     c->addColor(Couleur("first", "desc", 0, 0, 0));
-
-     m_clients.push_back(*c);
-     ui->listeClient->addItem(m_clients[qMax(0, m_clients.size()-1)].getNom());*/
+    Client* c(NULL);
 
     profileRep->setFilter(QDir::Files);
     for(uint i= 0; i< profileRep->count(); i++)
     {
-        QString filePath = profileRep->entryList().at(i);
-        qDebug() << i << " : " << filePath;
+        QString filePath = profileRep->absoluteFilePath(profileRep->entryList().at(i));
 
-        //if(filePath != "." && filePath != "..")
-        //{
-            c = Client::loadFromFile(profileRep->absoluteFilePath(filePath));
-            if(c != NULL)
-            {
-                m_clients.push_back(*c);
-                ui->listeClient->addItem(m_clients.last().getNom());
-                delete c;
-            }
-        //}
+        c = Client::loadFromFile(filePath);
+        if(c != NULL)
+        {
+            m_clients.push_back(*c);
+            ui->listeClient->addItem(m_clients.last().getNom());
+
+            delete c;
+            c = NULL;
+        }
     }
 }
 
 MainWindow::~MainWindow()
 {
-    //profileRep.setNameFilters(QStringList() << "*.*");
-
     foreach(QString dirFile, profileRep->entryList())
     {
         profileRep->remove(dirFile);
     }
 
-    for(int i= 0; i< qAbs(m_clients.size()); i++)
+    foreach(Client c, m_clients)
     {
-        Client::saveToFile(m_clients[i]);
+        Client::saveToFile(c);
     }
 
     delete ui;
@@ -84,6 +78,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::activateColors(QListWidgetItem* item)
 {
+    ui->btn_clientDel->setEnabled(true);
+    ui->btn_clientProp->setEnabled(true);
     ui->btn_colorAdd->setEnabled(true);
     ui->btn_colorDel->setEnabled(true);
     ui->btn_colorProp->setEnabled(true);
@@ -117,11 +113,30 @@ void MainWindow::ajouterCouleur()
 void MainWindow::ajouterClient()
 {
     QString nom = QInputDialog::getText(this, "Nouveau Client", "Nom du nouveau client : ");
+    if(nom != "")
+    {
+        QString filePath = profileRep->path() + "/" + nom.toLower();
+        QMessageBox::information(this, "", nom + " " + filePath);
 
-    QString filePath = profileRep->path() + "/" + nom.toLower();
-    QMessageBox::information(this, "", nom + " " + filePath);
+        addClient(Client(nom, filePath));
+    }
+}
 
-    addClient(Client(nom, filePath));
+void MainWindow::supprimClient()
+{
+    if(QMessageBox::question(this, "Supprimer Client", "Etes vous sur ?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+    {
+        int index = ui->listeClient->currentIndex().row();
+
+        m_clients.remove(index);
+        delete ui->listeClient->item(index);
+
+        if(m_clients.size() == 0)
+        {
+            ui->btn_clientDel->setEnabled(false);
+            ui->btn_clientProp->setEnabled(false);
+        }
+    }
 }
 
 void MainWindow::addClient(const Client& c)
