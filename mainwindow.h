@@ -23,6 +23,7 @@ public:
     ~MainWindow();
 
     void addClient(const Client&);
+    void actuGrilleCouleur();
 
 public slots:
     void activateColors(QListWidgetItem*);
@@ -41,6 +42,7 @@ private:
     QVector<Client> m_clients;
 
     ColorWindowAdd* winAddCol;
+    QVector<QPushButton*> Grille_Couleur;
 };
 
 #endif // MAINWINDOW_H

@@ -16,22 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     winAddCol = new ColorWindowAdd(this);
     winAddCol->show();*/
 
-    /*On prend le nombre de couleur dont dispose le client pour faire un tableau de meme taille
-    QPushButton btn_couleur[nbCouleurClient];
-    QPushButton btn_couleur[2];
-    for(int i=0; i<2; i++) // on devrait aller jusqu'a nbCouleurClient
-    {
-        QPushButton btn_tmp(""); // pour le test on ne prend que un seul bouton
-        btn_couleur[i]=btn_tmp;
-        //Ici on place les boutons dans la groupBox
-        // On definit l'evenement pour tous les boutons que l'on a cree
-        ui->btn_couleur[i]->setStyleSheet(//Mettre le background avec la couleur Corrsepondante)
-        QObject::connect(ui->btn_couleur[i],SIGNAL(clicked(QPushButton)), this, SLOT(afficher_CouleurCourante(QPushButton*))); // Il faut envoyer le Bouton
-        sur qui on a cliquer au slot
 
-    }
-
-    */
     QObject::connect(ui->listeClient, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(activateColors(QListWidgetItem*)));
     QObject::connect(ui->btn_couleur, SIGNAL(clicked()), this, SLOT(afficher_CouleurCourante()));
 
@@ -58,6 +43,9 @@ MainWindow::MainWindow(QWidget *parent) :
             c = NULL;
         }
     }
+
+
+
 }
 
 MainWindow::~MainWindow()
@@ -85,6 +73,8 @@ void MainWindow::activateColors(QListWidgetItem* item)
     ui->btn_colorProp->setEnabled(true);
     ui->btn_validation->setEnabled(true);
     MajCodeCouleur(item);
+
+    actuGrilleCouleur();
 }
 
 void MainWindow::MajCodeCouleur(QListWidgetItem*)
@@ -155,7 +145,45 @@ void MainWindow::getCouleur()
     {
         int indexClientSelectionne = ui->listeClient->currentIndex().row();
         m_clients[indexClientSelectionne].addColor(*newCol);
-
+        actuGrilleCouleur();
         delete newCol;
+    }
+
+}
+
+void MainWindow::actuGrilleCouleur()
+{
+    Client curClient = m_clients[ui->listeClient->currentIndex().row()];
+    QVector<Couleur> ListeCouleur = curClient.getCol();
+    int nbCouleur= ListeCouleur.size();
+    QColor couleurTmp;
+    int r,g,b;
+    int posX=0, posY=0;
+    QString Style;
+    for(int i=0; i<nbCouleur; i++)
+    {
+        QPushButton *boutonTmp = new QPushButton("",ui->grpb_listeCouleur);
+        couleurTmp = ListeCouleur.value(i).col;
+        couleurTmp.getRgb(&r,&g,&b);
+        Style ="background: rgb("+QString::number(r)+","+QString::number(g)+","+QString::number(b)+")";
+        boutonTmp->setStyleSheet(Style);
+
+        boutonTmp->setGeometry(posX,posY,160/(nbCouleur*0.5),150/(nbCouleur*0.5));
+        if(posX+2*(160/(nbCouleur*0.5))>=160)
+        {
+            posX=0;
+            posY+=150/(nbCouleur*0.5);
+        }
+        else
+            posX=posX+160/(nbCouleur*0.5);
+
+
+
+
+        Grille_Couleur.push_back(boutonTmp);
+    }
+    for(int i=0; i<nbCouleur; i++)
+    {
+        Grille_Couleur.value(i)->show();
     }
 }
