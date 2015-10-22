@@ -12,6 +12,7 @@ public:
 
     QString getNom () const;
     QString getDesc() const;
+
     void    setNom (const QString&);
     void    setDesc(const QString&);
 
