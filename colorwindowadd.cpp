@@ -3,7 +3,7 @@
 
 ColorWindowAdd::ColorWindowAdd(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::ColorWindowAdd)
+    ui(new Ui::ColorWindowAdd), r(0), g(0), b(0)
 {
     init(parent);
     majCouleur();
@@ -11,20 +11,20 @@ ColorWindowAdd::ColorWindowAdd(QWidget *parent) :
 
 ColorWindowAdd::ColorWindowAdd(Couleur& c, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::ColorWindowAdd)
+    ui(new Ui::ColorWindowAdd), r(c.col.red()), g(c.col.green()), b(c.col.blue())
 {
     init(parent);
 
     ui->in_titre->setText(c.getNom());
     ui->in_desc->setText(c.getDesc());
 
-    ui->in_rouge->setText(QString::number(c.col.red()));
-    ui->in_vert->setText(QString::number(c.col.green()));
-    ui->in_bleu->setText(QString::number(c.col.blue()));
+    ui->in_rouge->setText(QString::number(r));
+    ui->in_vert->setText(QString::number(g));
+    ui->in_bleu->setText(QString::number(b));
 
-    ui->slider_rouge->setValue(c.col.red());
-    ui->slider_vert->setValue(c.col.green());
-    ui->slider_bleu->setValue(c.col.blue());
+    ui->slider_rouge->setValue(r);
+    ui->slider_vert->setValue(g);
+    ui->slider_bleu->setValue(b);
 
     majCouleur();
 }

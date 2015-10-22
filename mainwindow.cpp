@@ -4,62 +4,63 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow), winAddCol(NULL)
 {
     ui->setupUi(this);
-    winAddCol = NULL;
 
-    profileRep = new QDir("profiles");
-    if (!profileRep->exists()) {
-        profileRep->mkpath(".");
-    }
-/*
-    winAddCol = new ColorWindowAdd(this);
-    winAddCol->show();*/
+	/* Ouverture du dossier contenant les profiles */
+		profileRep = new QDir("profiles");
+		if (!profileRep->exists()) {
+		    profileRep->mkpath(".");
+		}
 
-
-    QObject::connect(ui->listeClient, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(activateColors(QListWidgetItem*)));
-    QObject::connect(ui->btn_couleur, SIGNAL(clicked()), this, SLOT(afficher_CouleurCourante()));
-
-    QObject::connect(ui->btn_clientAdd, SIGNAL(clicked()), this, SLOT(ajouterClient()));
-    QObject::connect(ui->btn_clientDel, SIGNAL(clicked()), this, SLOT(supprimClient()));
-
-    QObject::connect(ui->btn_colorAdd, SIGNAL(clicked()), this, SLOT(ajouterCouleur()));
+		profileRep->setFilter(QDir::Files);
 
 
-    Client* c(NULL);
+	/* Création des évenements */
+		QObject::connect(ui->listeClient, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(activateColors(QListWidgetItem*)));
+		QObject::connect(ui->btn_couleur, SIGNAL(clicked()), this, SLOT(afficher_CouleurCourante()));
 
-    profileRep->setFilter(QDir::Files);
-    for(uint i= 0; i< profileRep->count(); i++)
-    {
-        QString filePath = profileRep->absoluteFilePath(profileRep->entryList().at(i));
+		QObject::connect(ui->btn_clientAdd,  SIGNAL(clicked()), this, SLOT(ajouterClient()));
+		QObject::connect(ui->btn_clientDel,  SIGNAL(clicked()), this, SLOT(supprimClient()));
+		QObject::connect(ui->btn_clientProp, SIGNAL(clicked()), this, SLOT(modifieClient()));
 
-        c = Client::loadFromFile(filePath);
-        if(c != NULL)
-        {
-            m_clients.push_back(*c);
-            ui->listeClient->addItem(m_clients.last().getNom());
+		QObject::connect(ui->btn_colorAdd,  SIGNAL(clicked()), this, SLOT(ajouterCouleur()));
+		QObject::connect(ui->btn_colorDel,  SIGNAL(clicked()), this, SLOT(supprimCouleur()));
+		QObject::connect(ui->btn_colorProp, SIGNAL(clicked()), this, SLOT(modifieCouleur()));
 
-            delete c;
-            c = NULL;
-        }
-    }
+	/* Chargement des clients */
+		Client* c(NULL);
 
+		for(uint i= 0; i< profileRep->count(); i++)
+		{
+		    QString filePath = profileRep->absoluteFilePath(profileRep->entryList().at(i));
 
+		    c = Client::loadFromFile(filePath);
+		    if(c != NULL)
+		    {
+		        m_clients.push_back(*c);
+		        ui->listeClient->addItem(m_clients.last().getNom());
 
+		        delete c;
+		        c = NULL;
+		    }
+		}
 }
 
 MainWindow::~MainWindow()
 {
-    foreach(QString dirFile, profileRep->entryList())
-    {
-        profileRep->remove(dirFile);
-    }
+	/* On supprime le contenu du dossier profiles/ pour avoir une base saine à coup sur */
+		foreach(QString dirFile, profileRep->entryList())
+		{
+		    profileRep->remove(dirFile);
+		}
 
-    foreach(Client c, m_clients)
-    {
-        Client::saveToFile(c);
-    }
+	/* Enregistrement de chaques clients */
+		foreach(Client c, m_clients)
+		{
+		    Client::saveToFile(c);
+		}
 
     delete ui;
     //if(winAddCol != NULL) delete winAddCol;
@@ -67,24 +68,19 @@ MainWindow::~MainWindow()
 
 void MainWindow::activateColors(QListWidgetItem* item)
 {
-    ui->btn_clientDel->setEnabled(true);
-    ui->btn_clientProp->setEnabled(true);
-    ui->btn_colorAdd->setEnabled(true);
-    ui->btn_colorDel->setEnabled(true);
-    ui->btn_colorProp->setEnabled(true);
-    ui->btn_validation->setEnabled(true);
+    setClientSelected(true);
     MajCodeCouleur(item);
 
     actuGrilleCouleur();
 }
 
-
-
 void MainWindow::MajCodeCouleur(QListWidgetItem*)
 {
     int index = ui->listeClient->currentRow();
+
     QVector<Couleur> listecouleur = m_clients[index].getCol();
     QColor couleur;
+
     ui->listeEncodage->setEnabled(true);
     ui->listeEncodage->clear();
     if(listecouleur.size() > 0)
@@ -117,9 +113,27 @@ void MainWindow::afficher_CouleurCourante()
 
 void MainWindow::ajouterCouleur()
 {
+    if(winAddCol != NULL) { delete winAddCol; winAddCol = NULL; }
+
     winAddCol = new ColorWindowAdd(this);
     winAddCol->show();
 }
+
+void MainWindow::supprimCouleur()
+{
+    int indexClient = ui->listeClient->currentIndex().row();
+    int indexCouleur = 0;
+
+    //ToDo
+}
+
+void MainWindow::modifieCouleur()
+{/*
+    if(winAddCol != NULL) delete winAddCol;
+    winAddCol = new ColorWindowAdd(c, this);
+    winAddCol->show();*/
+}
+
 
 void MainWindow::ajouterClient()
 {
@@ -146,14 +160,37 @@ void MainWindow::supprimClient()
         {
             ui->btn_clientDel->setEnabled(false);
             ui->btn_clientProp->setEnabled(false);
+            setClientSelected(false);
         }
     }
+}
+
+void MainWindow::setClientSelected(bool b)
+{
+    ui->btn_clientDel->setEnabled(b);
+    ui->btn_clientProp->setEnabled(b);
+
+    ui->btn_colorAdd->setEnabled(b);
+    ui->btn_colorDel->setEnabled(b);
+    ui->btn_colorProp->setEnabled(b);
+
+    ui->btn_validation->setEnabled(b);
 }
 
 void MainWindow::addClient(const Client& c)
 {
     m_clients.push_back(c);
     ui->listeClient->addItem(c.getNom());
+}
+
+void MainWindow::modifieClient()
+{
+    int index = ui->listeClient->currentIndex().row();
+
+    QString nvNom = QInputDialog::getText(this, "Modifier Client", "Nouveau nom : ", QLineEdit::Normal, m_clients[index].getNom());
+
+    m_clients[index].setNom(nvNom);
+    ui->listeClient->currentItem()->setText(nvNom);
 }
 
 void MainWindow::getCouleur()
