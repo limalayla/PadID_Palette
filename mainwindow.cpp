@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -87,14 +88,25 @@ void MainWindow::activateColors(QListWidgetItem* item)
     MajCodeCouleur(item);
 }
 
+
+
 void MainWindow::MajCodeCouleur(QListWidgetItem*)
 {
+    int index = ui->listeClient->currentRow();
+    QVector<Couleur> listecouleur = m_clients[index].getCol();
+    QColor couleur;
+    if(listecouleur.size() > 0)
+    couleur = listecouleur[0].col;
+    int r,g,b;
+    couleur.getRgb(&r,&g,&b);
+    //QString temps= "RGB :"+QString::number(couleur.green());
     ui->listeEncodage->setEnabled(true);
     ui->listeEncodage->clear();
-    ui->listeEncodage->addItem("RGB :");
+    ui->listeEncodage->addItem("RGB :"+QString::number(r)+" "+QString::number(g)+" "+QString::number(b));
     ui->listeEncodage->addItem("Hex :");
     ui->listeEncodage->addItem("CMY :");
     ui->listeEncodage->addItem("TSL :");
+
 }
 
 void MainWindow::afficher_CouleurCourante()
