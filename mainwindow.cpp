@@ -95,17 +95,26 @@ void MainWindow::MajCodeCouleur(QListWidgetItem*)
     int index = ui->listeClient->currentRow();
     QVector<Couleur> listecouleur = m_clients[index].getCol();
     QColor couleur;
-    if(listecouleur.size() > 0)
-    couleur = listecouleur[0].col;
-    int r,g,b;
-    couleur.getRgb(&r,&g,&b);
-    //QString temps= "RGB :"+QString::number(couleur.green());
     ui->listeEncodage->setEnabled(true);
     ui->listeEncodage->clear();
+    if(listecouleur.size() > 0)
+    {
+    couleur = listecouleur[0].col;
+    int r,g,b,n,c,m,y;
+    couleur.getRgb(&r,&g,&b);
+    //QString temps= "RGB :"+QString::number(couleur.green());
+
+
     ui->listeEncodage->addItem("RGB :"+QString::number(r)+" "+QString::number(g)+" "+QString::number(b));
-    ui->listeEncodage->addItem("Hex :");
-    ui->listeEncodage->addItem("CMY :");
+    ui->listeEncodage->addItem("Hex :"+QString::number(r,16)+" "+QString::number(g,16)+" "+QString::number(b,16));
+    n = qMin(255-b, 255-g);
+    n = qMin(n, 255-b);
+    c = (100*(255-r-n) / (255-n));
+    m = (100*(255-g-n) / (255-n));
+    y = (100*(255-b-n) / (255-n));
+    ui->listeEncodage->addItem("CMY :"+QString::number(c)+" "+QString::number(m)+" "+QString::number(y)+" "+QString::number(n));
     ui->listeEncodage->addItem("TSL :");
+    }
 
 }
 
