@@ -40,6 +40,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->btn_clientProp, SIGNAL(clicked()), this, SLOT(modifieClient()));
 
     QObject::connect(ui->btn_colorAdd, SIGNAL(clicked()), this, SLOT(ajouterCouleur()));
+    QObject::connect(ui->btn_colorDel, SIGNAL(clicked()), this, SLOT(supprimCouleur()));
+    QObject::connect(ui->btn_colorProp, SIGNAL(clicked()), this, SLOT(modifieCouleur()));
 
 
     Client* c(NULL);
@@ -102,9 +104,26 @@ void MainWindow::afficher_CouleurCourante()
 
 void MainWindow::ajouterCouleur()
 {
+    if(winAddCol != NULL) delete winAddCol;
     winAddCol = new ColorWindowAdd(this);
     winAddCol->show();
 }
+
+void MainWindow::supprimCouleur()
+{
+    int indexClient = ui->listeClient->currentIndex().row();
+    int indexCouleur = 0;
+
+    //ToDo
+}
+
+void MainWindow::modifieCouleur()
+{/*
+    if(winAddCol != NULL) delete winAddCol;
+    winAddCol = new ColorWindowAdd(c, this);
+    winAddCol->show();*/
+}
+
 
 void MainWindow::ajouterClient()
 {

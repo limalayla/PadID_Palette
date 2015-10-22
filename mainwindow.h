@@ -34,6 +34,9 @@ public slots:
     void modifieClient();
 
     void ajouterCouleur();
+    void supprimCouleur();
+    void modifieCouleur();
+
     void getCouleur();
 
     void setClientSelected(bool b);
