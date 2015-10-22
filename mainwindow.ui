@@ -244,9 +244,9 @@
     <property name="geometry">
      <rect>
       <x>230</x>
-      <y>90</y>
-      <width>161</width>
-      <height>151</height>
+      <y>91</y>
+      <width>160</width>
+      <height>150</height>
      </rect>
     </property>
     <property name="title">
@@ -276,7 +276,7 @@
      <x>0</x>
      <y>0</y>
      <width>750</width>
-     <height>20</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFichier">

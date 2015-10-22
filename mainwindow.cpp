@@ -44,18 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
         }
     }
 
-    /*
-    QVector<Couleur> ListeCouleur = c.getCol();
-    int nbCouleur= ListeCouleur.size();
-    QColor couleurTmp;
-    int r,g,b;
-    QVector<QPushButton> Liste_Bouton_Couleur;
-    for(int i=0; i<nbCouleur; i++)
-    {
-        couleurTmp = ListeCouleur.value(i).col;
-        couleurTmp.getRgb(r,g,b);
-    }
-    */
+
 
 }
 
@@ -84,6 +73,8 @@ void MainWindow::activateColors(QListWidgetItem* item)
     ui->btn_colorProp->setEnabled(true);
     ui->btn_validation->setEnabled(true);
     MajCodeCouleur(item);
+
+    actuGrilleCouleur();
 }
 
 void MainWindow::MajCodeCouleur(QListWidgetItem*)
@@ -154,7 +145,45 @@ void MainWindow::getCouleur()
     {
         int indexClientSelectionne = ui->listeClient->currentIndex().row();
         m_clients[indexClientSelectionne].addColor(*newCol);
-
+        actuGrilleCouleur();
         delete newCol;
+    }
+
+}
+
+void MainWindow::actuGrilleCouleur()
+{
+    Client curClient = m_clients[ui->listeClient->currentIndex().row()];
+    QVector<Couleur> ListeCouleur = curClient.getCol();
+    int nbCouleur= ListeCouleur.size();
+    QColor couleurTmp;
+    int r,g,b;
+    int posX=0, posY=0;
+    QString Style;
+    for(int i=0; i<nbCouleur; i++)
+    {
+        QPushButton *boutonTmp = new QPushButton("",ui->grpb_listeCouleur);
+        couleurTmp = ListeCouleur.value(i).col;
+        couleurTmp.getRgb(&r,&g,&b);
+        Style ="background: rgb("+QString::number(r)+","+QString::number(g)+","+QString::number(b)+")";
+        boutonTmp->setStyleSheet(Style);
+
+        boutonTmp->setGeometry(posX,posY,160/(nbCouleur*0.5),150/(nbCouleur*0.5));
+        if(posX+2*(160/(nbCouleur*0.5))>=160)
+        {
+            posX=0;
+            posY+=150/(nbCouleur*0.5);
+        }
+        else
+            posX=posX+160/(nbCouleur*0.5);
+
+
+
+
+        Grille_Couleur.push_back(boutonTmp);
+    }
+    for(int i=0; i<nbCouleur; i++)
+    {
+        Grille_Couleur.value(i)->show();
     }
 }
