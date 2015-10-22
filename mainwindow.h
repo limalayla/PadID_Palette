@@ -31,9 +31,12 @@ public slots:
 
     void ajouterClient();
     void supprimClient();
+    void modifieClient();
 
     void ajouterCouleur();
     void getCouleur();
+
+    void setClientSelected(bool b);
 
 private:
     Ui::MainWindow *ui;

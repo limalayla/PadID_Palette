@@ -3,7 +3,7 @@
 
 ColorWindowAdd::ColorWindowAdd(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::ColorWindowAdd)
+    ui(new Ui::ColorWindowAdd), r(0), g(0), b(0)
 {
     init(parent);
     majCouleur();
@@ -11,7 +11,7 @@ ColorWindowAdd::ColorWindowAdd(QWidget *parent) :
 
 ColorWindowAdd::ColorWindowAdd(Couleur& c, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::ColorWindowAdd)
+    ui(new Ui::ColorWindowAdd), r(0), g(0), b(0)
 {
     init(parent);
 

@@ -32,11 +32,12 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     */
-    QObject::connect(ui->listeClient, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(activateColors(QListWidgetItem*)));
+    QObject::connect(ui->listeClient, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(activateColors(QListWidgetItem*)));
     QObject::connect(ui->btn_couleur, SIGNAL(clicked()), this, SLOT(afficher_CouleurCourante()));
 
-    QObject::connect(ui->btn_clientAdd, SIGNAL(clicked()), this, SLOT(ajouterClient()));
-    QObject::connect(ui->btn_clientDel, SIGNAL(clicked()), this, SLOT(supprimClient()));
+    QObject::connect(ui->btn_clientAdd,  SIGNAL(clicked()), this, SLOT(ajouterClient()));
+    QObject::connect(ui->btn_clientDel,  SIGNAL(clicked()), this, SLOT(supprimClient()));
+    QObject::connect(ui->btn_clientProp, SIGNAL(clicked()), this, SLOT(modifieClient()));
 
     QObject::connect(ui->btn_colorAdd, SIGNAL(clicked()), this, SLOT(ajouterCouleur()));
 
@@ -78,12 +79,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::activateColors(QListWidgetItem* item)
 {
-    ui->btn_clientDel->setEnabled(true);
-    ui->btn_clientProp->setEnabled(true);
-    ui->btn_colorAdd->setEnabled(true);
-    ui->btn_colorDel->setEnabled(true);
-    ui->btn_colorProp->setEnabled(true);
-    ui->btn_validation->setEnabled(true);
+    setClientSelected(true);
     MajCodeCouleur(item);
 }
 
@@ -135,14 +131,37 @@ void MainWindow::supprimClient()
         {
             ui->btn_clientDel->setEnabled(false);
             ui->btn_clientProp->setEnabled(false);
+            setClientSelected(false);
         }
     }
+}
+
+void MainWindow::setClientSelected(bool b)
+{
+    ui->btn_clientDel->setEnabled(b);
+    ui->btn_clientProp->setEnabled(b);
+
+    ui->btn_colorAdd->setEnabled(b);
+    ui->btn_colorDel->setEnabled(b);
+    ui->btn_colorProp->setEnabled(b);
+
+    ui->btn_validation->setEnabled(b);
 }
 
 void MainWindow::addClient(const Client& c)
 {
     m_clients.push_back(c);
     ui->listeClient->addItem(c.getNom());
+}
+
+void MainWindow::modifieClient()
+{
+    int index = ui->listeClient->currentIndex().row();
+
+    QString nvNom = QInputDialog::getText(this, "Modifier Client", "Nouveau nom : ", QLineEdit::Normal, m_clients[index].getNom());
+
+    m_clients[index].setNom(nvNom);
+    ui->listeClient->currentItem()->setText(nvNom);
 }
 
 void MainWindow::getCouleur()
