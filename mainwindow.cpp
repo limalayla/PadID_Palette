@@ -25,25 +25,28 @@ MainWindow::MainWindow(QWidget *parent) :
 		QObject::connect(ui->btn_clientDel,  SIGNAL(clicked()), this, SLOT(supprimClient()));
 		QObject::connect(ui->btn_clientProp, SIGNAL(clicked()), this, SLOT(modifieClient()));
 
-		QObject::connect(ui->btn_colorAdd,  SIGNAL(clicked()), this, SLOT(ajouterCouleur()));
-		QObject::connect(ui->btn_colorDel,  SIGNAL(clicked()), this, SLOT(supprimCouleur()));
-		QObject::connect(ui->btn_colorProp, SIGNAL(clicked()), this, SLOT(modifieCouleur()));
+        QObject::connect(ui->btn_colorAdd,   SIGNAL(clicked()), this, SLOT(ajouterCouleur()));
+        QObject::connect(ui->btn_colorDel,   SIGNAL(clicked()), this, SLOT(supprimCouleur()));
+        QObject::connect(ui->btn_colorProp,  SIGNAL(clicked()), this, SLOT(modifieCouleur()));
 
-	/* Chargement des clients */
-		Client* c(NULL);
+        QObject::connect(ui->btn_validation, SIGNAL(clicked()), this, SLOT(copyColor()));
+
+
+    /* Chargement des clients */
+        Client* c(NULL);
 
 		for(uint i= 0; i< profileRep->count(); i++)
 		{
 		    QString filePath = profileRep->absoluteFilePath(profileRep->entryList().at(i));
 
-		    c = Client::loadFromFile(filePath);
-		    if(c != NULL)
+            c = Client::loadFromFile(filePath);
+            if(c != NULL)
 		    {
-		        m_clients.push_back(*c);
+                m_clients.push_back(*c);
 		        ui->listeClient->addItem(m_clients.last().getNom());
 
-		        delete c;
-		        c = NULL;
+                delete c;
+                c = NULL;
 		    }
 		}
 }
@@ -63,7 +66,7 @@ MainWindow::~MainWindow()
 		}
 
     delete ui;
-    //if(winAddCol != NULL) delete winAddCol;
+    if(winAddCol != NULL) delete winAddCol;
 }
 
 void MainWindow::activateColors(QListWidgetItem* item)
@@ -106,8 +109,7 @@ void MainWindow::MajCodeCouleur(QListWidgetItem*)
 
 void MainWindow::afficher_CouleurCourante()
 {
-    QString StyleSheetParent = ui->btn_couleur->styleSheet();
-    ui->widget_CouleurCourante->setStyleSheet(StyleSheetParent);
+    ui->widget_CouleurCourante->setStyleSheet(ui->btn_couleur->styleSheet());
 }
 
 
@@ -121,17 +123,22 @@ void MainWindow::ajouterCouleur()
 
 void MainWindow::supprimCouleur()
 {
-    int indexClient = ui->listeClient->currentIndex().row();
-    int indexCouleur = 0;
-
-    //ToDo
+    /* Récuperer couleur courante à la place */
+        //indexCouleur = m_clients[ui->listeClient->currentRow()].getCol()
+    m_clients[ui->listeClient->currentRow()].getCol().pop_back();
 }
 
 void MainWindow::modifieCouleur()
-{/*
-    if(winAddCol != NULL) delete winAddCol;
-    winAddCol = new ColorWindowAdd(c, this);
-    winAddCol->show();*/
+{
+    if(winAddCol != NULL) { delete winAddCol; winAddCol = NULL; }
+
+    /* Récuperer couleur courante à la place */
+    Couleur* c = new Couleur("Titre", "Description", 100, 250, 80);
+    if(c != NULL)
+    {
+        winAddCol = new ColorWindowAdd(*c, this);
+        winAddCol->show();
+    }
 }
 
 
@@ -141,7 +148,6 @@ void MainWindow::ajouterClient()
     if(nom != "")
     {
         QString filePath = profileRep->path() + "/" + nom.toLower();
-        QMessageBox::information(this, "", nom + " " + filePath);
 
         addClient(Client(nom, filePath));
     }
@@ -158,8 +164,6 @@ void MainWindow::supprimClient()
 
         if(m_clients.size() == 0)
         {
-            ui->btn_clientDel->setEnabled(false);
-            ui->btn_clientProp->setEnabled(false);
             setClientSelected(false);
         }
     }
@@ -174,7 +178,13 @@ void MainWindow::setClientSelected(bool b)
     ui->btn_colorDel->setEnabled(b);
     ui->btn_colorProp->setEnabled(b);
 
+    ui->nomCouleur->setEnabled(b);
+    ui->descCouleur->setEnabled(b);
+    ui->widget_CouleurCourante->setEnabled(b);
     ui->btn_validation->setEnabled(b);
+
+    ui->listeEncodage->clear();
+    ui->listeEncodage->setEnabled(b);
 }
 
 void MainWindow::addClient(const Client& c)
@@ -206,7 +216,21 @@ void MainWindow::getCouleur()
         actuGrilleCouleur();
         delete newCol;
     }
+}
 
+void MainWindow::modCol()
+{
+    Couleur* newCol = NULL;
+    if(winAddCol != NULL) newCol = winAddCol->getCouleur();
+
+    if(newCol != NULL)
+    {
+        /* Remplacer la couleur actuelle par la nouvelle */
+        int indexClientSelectionne = ui->listeClient->currentIndex().row();
+        m_clients[indexClientSelectionne].addColor(*newCol);
+        actuGrilleCouleur();
+        delete newCol;
+    }
 }
 
 void MainWindow::actuGrilleCouleur()
@@ -244,4 +268,10 @@ void MainWindow::actuGrilleCouleur()
     {
         Grille_Couleur.value(i)->show();
     }
+}
+
+void MainWindow::copyColor() const
+{
+    if(ui->listeEncodage->currentItem() != NULL)
+        QApplication::clipboard()->setText(ui->listeEncodage->currentItem()->text());
 }

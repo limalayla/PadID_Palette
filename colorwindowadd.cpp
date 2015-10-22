@@ -3,17 +3,21 @@
 
 ColorWindowAdd::ColorWindowAdd(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::ColorWindowAdd), r(0), g(0), b(0)
+    ui(new Ui::ColorWindowAdd), r(0), g(0), b(0), modif(false)
 {
-    init(parent);
+    ui->setupUi(this);
+    QObject::connect(ui->btn_ok, SIGNAL(clicked()), parent, SLOT(getCouleur()));
+    init();
     majCouleur();
 }
 
-ColorWindowAdd::ColorWindowAdd(Couleur& c, QWidget *parent) :
+ColorWindowAdd::ColorWindowAdd(const Couleur& c, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::ColorWindowAdd), r(c.col.red()), g(c.col.green()), b(c.col.blue())
+    ui(new Ui::ColorWindowAdd), r(c.col.red()), g(c.col.green()), b(c.col.blue()), modif(true)
 {
-    init(parent);
+    ui->setupUi(this);
+    QObject::connect(ui->btn_ok, SIGNAL(clicked()), parent, SLOT(modCol()));
+    init();
 
     ui->in_titre->setText(c.getNom());
     ui->in_desc->setText(c.getDesc());
@@ -35,9 +39,8 @@ ColorWindowAdd::~ColorWindowAdd()
     delete ui;
 }
 
-void ColorWindowAdd::init(QWidget *parent)
+void ColorWindowAdd::init()
 {
-    ui->setupUi(this);
     qDebug() << "OUVERT";
 
     ui->in_rouge->setValidator(new QIntValidator(0, 255, this));
@@ -52,7 +55,6 @@ void ColorWindowAdd::init(QWidget *parent)
     QObject::connect(ui->in_vert,  SIGNAL(textEdited(QString)), this, SLOT(setSlidGreen(QString)));
     QObject::connect(ui->in_bleu,  SIGNAL(textEdited(QString)), this, SLOT(setSlidBlue(QString)));
 
-    QObject::connect(ui->btn_ok, SIGNAL(clicked()), parent, SLOT(getCouleur()));
     QObject::connect(ui->btn_ok, SIGNAL(clicked()), this, SLOT(close()));
     QObject::connect(ui->btn_annuler, SIGNAL(clicked()), this, SLOT(close()));
 
@@ -74,7 +76,6 @@ void ColorWindowAdd::majCouleur()
     Pal.setColor(QPalette::Background, QColor(r, g, b));
     ui->widget->setAutoFillBackground(true);
     ui->widget->setPalette(Pal);
-    ui->widget->show();
 }
 
 Couleur* ColorWindowAdd::getCouleur()

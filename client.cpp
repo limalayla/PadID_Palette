@@ -27,7 +27,6 @@ QString Client::toSavableFormat() const
     }
 
     if(m_colorlist.size() > 0) res = res.left(res.size()-1);
-    QMessageBox::information(NULL, "", res);
     return res;
 }
 

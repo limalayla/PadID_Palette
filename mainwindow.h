@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QInputDialog>
+#include <QClipboard>
 
 #include "client.h"
 #include "colorwindowadd.h"
@@ -41,6 +42,8 @@ public slots:
     void getCouleur();
 
     void setClientSelected(bool b);
+    void copyColor() const;
+    void modCol();
 
 private:
     Ui::MainWindow *ui;

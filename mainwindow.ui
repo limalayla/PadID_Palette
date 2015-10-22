@@ -191,6 +191,9 @@
       <height>25</height>
      </rect>
     </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
    </widget>
    <widget class="QTextEdit" name="descCouleur">
     <property name="enabled">
@@ -203,6 +206,9 @@
       <width>160</width>
       <height>50</height>
      </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QPushButton" name="btn_validation">
@@ -276,7 +282,7 @@
      <x>0</x>
      <y>0</y>
      <width>750</width>
-     <height>26</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFichier">

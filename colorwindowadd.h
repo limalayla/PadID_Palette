@@ -16,7 +16,7 @@ class ColorWindowAdd : public QDialog
 
 public:
     explicit ColorWindowAdd(QWidget *parent = 0);
-    explicit ColorWindowAdd(Couleur& c, QWidget *parent = 0);
+    explicit ColorWindowAdd(const Couleur& c, QWidget *parent = 0);
     ~ColorWindowAdd();
     void majCouleur();
 
@@ -33,8 +33,9 @@ public slots:
 
 private:
     Ui::ColorWindowAdd *ui;
-    void init(QWidget *parent);
+    void init();
     quint8 r, g, b;
+    bool modif;
 };
 
 #endif // COLORWINDOWADD_H
