@@ -26,10 +26,10 @@ public:
     void addClient(const Client&);
     void actuGrilleCouleur();
 
-    int indexCouleurCur;
+
 public slots:
     void activateColors(QListWidgetItem*);
-    void MajCodeCouleur(QListWidgetItem*);
+    void MajCodeCouleur();
     void afficher_CouleurCourante();
 
     void ajouterClient();
@@ -46,6 +46,8 @@ public slots:
     void copyColor() const;
     void modCol();
 
+    void debugOut(const QString& msg);
+
 private:
     Ui::MainWindow *ui;
     QDir* profileRep;
@@ -53,6 +55,9 @@ private:
 
     ColorWindowAdd* winAddCol;
     QVector<QPushButton*> Grille_Couleur;
+
+    int indexCouleur;
+    int indexClient;
 };
 
 #endif // MAINWINDOW_H

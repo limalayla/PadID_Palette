@@ -75,6 +75,7 @@ Client* Client::loadFromFile(const QString& filePath)
         qDebug() << "\tBleu  (" << res->m_colorlist[i].col.blue()  << ") " ;
         qDebug() << "\tNom   (" << res->m_colorlist[i].getNom()    << ") " ;
         qDebug() << "\tDesc  (" << res->m_colorlist[i].getDesc()   << ") " ;
+        qDebug() ;
     }
 
     inFile.close();
@@ -89,28 +90,24 @@ Couleur* Client::getCouleur(const QStringList& sl)
     int tmp(0);
     Couleur* target = new Couleur();
 
-    qDebug() << "Chargement d'une couleur (" << sl.size() << ")";
-
     if(sl.size() != 5) return NULL;
 
+
     tmp = sl.value(0).toInt(&ok);
-    qDebug() << "\tRouge : " << sl.value(0) << " -> " << tmp << "(" << ok << ") -> " << (!ok || tmp <= 0 || tmp > 255);
     if(!ok || tmp < 0 || tmp > 255) return NULL;
     target->col.setRed(tmp);
 
-
     tmp = sl.value(1).toInt(&ok);
-    qDebug() << "Bleu : " << sl.value(1) << " -> " << tmp << "(" << ok << ")";
-    if(!ok || tmp < 0 || tmp > 255) return NULL;
-    target->col.setBlue(tmp);
-
-    tmp = sl.value(2).toInt(&ok);
-    qDebug() << "Vert : " << sl.value(2) << " -> " << tmp << "(" << ok << ")";
     if(!ok || tmp < 0 || tmp > 255) return NULL;
     target->col.setGreen(tmp);
 
+    tmp = sl.value(2).toInt(&ok);
+    if(!ok || tmp < 0 || tmp > 255) return NULL;
+    target->col.setBlue(tmp);
+
     target->setNom(sl.value(3));
     target->setDesc(sl.value(4));
+
 
     return target;
 }

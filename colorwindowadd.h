@@ -29,6 +29,8 @@ public slots:
     void setSlidGreen(QString);
     void setSlidBlue(QString);
 
+    void quit();
+
     Couleur* getCouleur();
 
 private:

@@ -30,6 +30,8 @@ ColorWindowAdd::ColorWindowAdd(const Couleur& c, QWidget *parent) :
     ui->slider_vert->setValue(g);
     ui->slider_bleu->setValue(b);
 
+    QWidget::setWindowTitle("Modification Couleur");
+
     majCouleur();
 }
 
@@ -56,7 +58,7 @@ void ColorWindowAdd::init()
     QObject::connect(ui->in_bleu,  SIGNAL(textEdited(QString)), this, SLOT(setSlidBlue(QString)));
 
     QObject::connect(ui->btn_ok, SIGNAL(clicked()), this, SLOT(close()));
-    QObject::connect(ui->btn_annuler, SIGNAL(clicked()), this, SLOT(close()));
+    QObject::connect(ui->btn_annuler, SIGNAL(clicked()), this, SLOT(quit()));
 
     majCouleur();
 }
@@ -83,3 +85,8 @@ Couleur* ColorWindowAdd::getCouleur()
     return new Couleur(ui->in_titre->text(), ui->in_desc->toPlainText(), r, g, b);
 }
 
+void ColorWindowAdd::quit()
+{
+    this->close();
+    this->parentWidget()->setEnabled(true);
+}

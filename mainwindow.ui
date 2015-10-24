@@ -258,22 +258,6 @@
     <property name="title">
      <string>Liste Des Couleurs</string>
     </property>
-    <widget class="QPushButton" name="btn_couleur">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>20</y>
-       <width>161</width>
-       <height>28</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background: rgb(214,61,23)</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
