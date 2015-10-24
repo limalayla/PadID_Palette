@@ -19,7 +19,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	/* Création des évenements */
 		QObject::connect(ui->listeClient, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(activateColors(QListWidgetItem*)));
-		QObject::connect(ui->btn_couleur, SIGNAL(clicked()), this, SLOT(afficher_CouleurCourante()));
 
 		QObject::connect(ui->btn_clientAdd,  SIGNAL(clicked()), this, SLOT(ajouterClient()));
 		QObject::connect(ui->btn_clientDel,  SIGNAL(clicked()), this, SLOT(supprimClient()));
@@ -109,7 +108,22 @@ void MainWindow::MajCodeCouleur(QListWidgetItem*)
 
 void MainWindow::afficher_CouleurCourante()
 {
-    ui->widget_CouleurCourante->setStyleSheet(ui->btn_couleur->styleSheet());
+    int i=0;
+    bool trouve=false;
+    Client curClient = m_clients[ui->listeClient->currentIndex().row()];
+    QVector<Couleur> ListeCouleur = curClient.getCol();
+
+    while((i<Grille_Couleur.size()) && (trouve==false))
+    {
+        if(sender()==Grille_Couleur.value(i))
+            trouve=true;
+        else
+            i++;
+    }
+    indexCouleurCur=i;
+    ui->widget_CouleurCourante->setStyleSheet(Grille_Couleur.value(indexCouleurCur)->styleSheet());
+    ui->nomCouleur->setText(ListeCouleur.value(indexCouleurCur).getNom());
+    ui->descCouleur->setText(ListeCouleur.value(indexCouleurCur).getDesc());
 }
 
 
@@ -244,6 +258,11 @@ void MainWindow::actuGrilleCouleur()
     QString Style;
     for(int i=0; i<nbCouleur; i++)
     {
+        Grille_Couleur.value(i)->deleteLater();
+    }
+    Grille_Couleur.clear();
+    for(int i=0; i<nbCouleur; i++)
+    {
         QPushButton *boutonTmp = new QPushButton("",ui->grpb_listeCouleur);
         couleurTmp = ListeCouleur.value(i).col;
         couleurTmp.getRgb(&r,&g,&b);
@@ -258,15 +277,12 @@ void MainWindow::actuGrilleCouleur()
         }
         else
             posX=posX+160/(nbCouleur*0.5);
-
-
-
-
         Grille_Couleur.push_back(boutonTmp);
     }
     for(int i=0; i<nbCouleur; i++)
     {
         Grille_Couleur.value(i)->show();
+        QObject::connect(Grille_Couleur.value(i), SIGNAL(clicked()), this, SLOT(afficher_CouleurCourante()));
     }
 }
 

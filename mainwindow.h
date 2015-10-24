@@ -26,6 +26,7 @@ public:
     void addClient(const Client&);
     void actuGrilleCouleur();
 
+    int indexCouleurCur;
 public slots:
     void activateColors(QListWidgetItem*);
     void MajCodeCouleur(QListWidgetItem*);
