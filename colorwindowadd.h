@@ -37,7 +37,6 @@ private:
     Ui::ColorWindowAdd *ui;
     void init();
     quint8 r, g, b;
-    bool modif;
 };
 
 #endif // COLORWINDOWADD_H

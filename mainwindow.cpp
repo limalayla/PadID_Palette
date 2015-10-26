@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 	/* Création des évenements */
-		QObject::connect(ui->listeClient, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(activateColors(QListWidgetItem*)));
+        QObject::connect(ui->listeClient, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(activateColors(QListWidgetItem*)));
 
 		QObject::connect(ui->btn_clientAdd,  SIGNAL(clicked()), this, SLOT(ajouterClient()));
 		QObject::connect(ui->btn_clientDel,  SIGNAL(clicked()), this, SLOT(supprimClient()));
@@ -89,6 +89,8 @@ void MainWindow::debugOut(const QString& msg)
     }
     else qDebug() << "\t" << "Aucun client selectionne";
 
+    qDebug();
+
 }
 
 void MainWindow::activateColors(QListWidgetItem*)
@@ -106,17 +108,17 @@ void MainWindow::activateColors(QListWidgetItem*)
 
 void MainWindow::MajCodeCouleur()
 {
-    int r(0), g(0), b(0);
-    int n(0), c(0), m(0), y(0);
-
     debugOut("MajCodeCouleur");
-
-    QVector<Couleur> listecouleur = m_clients[indexClient].getCol();
-    QColor* couleur;
+    ui->listeEncodage->clear();
 
     if(indexCouleur >= 0)
     {
-        couleur = &listecouleur[indexCouleur].col;
+        int r(0), g(0), b(0);
+        int n(0), c(0), m(0), y(0);
+
+
+        QVector<Couleur> listecouleur = m_clients[indexClient].getCol();
+        QColor* couleur = &listecouleur[indexCouleur].col;
         couleur->getRgb(&r, &g, &b);
 
         n = qMin(255-b, 255-g);
@@ -125,10 +127,10 @@ void MainWindow::MajCodeCouleur()
         m = (100*(255-g-n) / (255-n));
         y = (100*(255-b-n) / (255-n));
 
-        ui->listeEncodage->addItem("RGB :" + QString::number(r)     + " " + QString::number(g)     + " " + QString::number(b));
-        ui->listeEncodage->addItem("Hex :" + QString::number(r, 16) + " " + QString::number(g, 16) + " " + QString::number(b, 16));
-        ui->listeEncodage->addItem("CMY :" + QString::number(c)     + " " + QString::number(m)     + " " + QString::number(y)     + " " + QString::number(n));
-        ui->listeEncodage->addItem("TSL :");
+        ui->listeEncodage->addItem("RGB : " + QString::number(r)     + " " + QString::number(g)     + " " + QString::number(b));
+        ui->listeEncodage->addItem("Hex : " + QString::number(r, 16) + " " + QString::number(g, 16) + " " + QString::number(b, 16));
+        ui->listeEncodage->addItem("CMY : " + QString::number(c)     + " " + QString::number(m)     + " " + QString::number(y)     + " " + QString::number(n));
+        ui->listeEncodage->addItem("TSL : ");
     }
 
 }
@@ -151,10 +153,35 @@ void MainWindow::afficher_CouleurCourante()
     indexCouleur = (trouve) ? i : -1;
 
     debugOut("afficher_CouleurCourante");
+    majCol();
+}
 
-    ui->widget_CouleurCourante->setStyleSheet(Grille_Couleur[indexCouleur]->styleSheet());
-    ui->nomCouleur->setText(ListeCouleur.value(indexCouleur).getNom());
-    ui->descCouleur->setText(ListeCouleur.value(indexCouleur).getDesc());
+void MainWindow::majCol()
+{
+    debugOut("MajCol");
+
+    if(indexClient >= 0)
+    {
+        if(indexCouleur >= 0)
+        {
+            ui->widget_CouleurCourante->setStyleSheet(Grille_Couleur[indexCouleur]->styleSheet());
+            ui->nomCouleur->setText(m_clients[indexClient].getCol()[indexCouleur].getNom());
+            ui->descCouleur->setText(m_clients[indexClient].getCol()[indexCouleur].getDesc());
+            MajCodeCouleur();
+        }
+
+        else
+        {
+            ui->widget_CouleurCourante->setStyleSheet("background: rgb(0, 0, 0)");
+            ui->nomCouleur->setText("");
+            ui->descCouleur->setText("");
+            setClientSelected(false);
+            ui->btn_clientDel->setEnabled(true);
+            ui->btn_clientProp->setEnabled(true);
+            ui->listeEncodage->clear();
+        }
+    }
+    else setClientSelected(false);
 }
 
 
@@ -174,7 +201,12 @@ void MainWindow::supprimCouleur()
     {
         if(indexCouleur >= 0)
         {
-            QMessageBox::information(this, "", m_clients[indexClient].getCol()[indexCouleur].getNom());
+            if(QMessageBox::question(this, "Supprimer Couleur", "Etes vous sur ?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+            {
+                m_clients[indexClient].delCol(indexCouleur);
+                indexCouleur = (m_clients[indexClient].getCol().size() > 0) ? 0 : -1;
+                actuGrilleCouleur();
+            }
         }
         else QMessageBox::warning(this, "", "Pas de couleur selectionnee");
     }
@@ -195,6 +227,7 @@ void MainWindow::modifieCouleur()
             this->setEnabled(false);
             winAddCol->show();
             winAddCol->setEnabled(true);
+            actuGrilleCouleur();
         }
         else QMessageBox::warning(this, "", "Pas de couleur selectionnee");
     }
@@ -224,10 +257,8 @@ void MainWindow::supprimClient()
     {
         if(QMessageBox::question(this, "Supprimer Client", "Etes vous sur ?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
         {
-            int index = ui->listeClient->currentIndex().row();
-
-            m_clients.remove(index);
-            delete ui->listeClient->item(index);
+            m_clients.remove(indexClient);
+            delete ui->listeClient->item(indexClient);
 
             if(m_clients.size() == 0)
             {
@@ -235,7 +266,12 @@ void MainWindow::supprimClient()
                 indexCouleur = -1;
             }
 
-            indexClient = -1;
+            else
+            {
+                ui->listeClient->setCurrentRow(0);
+                indexClient = 0;
+            }
+
         }
     }
     else QMessageBox::warning(this, "", "Pas de client selectionne");
@@ -279,9 +315,13 @@ void MainWindow::modifieClient()
 
 void MainWindow::getCouleur()
 {
-    qDebug() << "Byebye";
-    Couleur* newCol = NULL;
-    if(winAddCol != NULL) newCol = winAddCol->getCouleur();
+    Couleur* newCol(NULL);
+    if(winAddCol != NULL)
+    {
+        newCol = winAddCol->getCouleur();
+        delete winAddCol;
+        winAddCol = NULL;
+    }
 
     if(newCol != NULL)
     {
@@ -295,33 +335,27 @@ void MainWindow::modCol()
 {
     Couleur* newCol(NULL);
     if(winAddCol != NULL)
-    {
-        delete newCol;
         newCol = winAddCol->getCouleur();
-    }
 
     this->setEnabled(true);
 
     if(newCol != NULL)
     {
-        if(indexCouleur >= 0)
+        if(indexClient >= 0)
         {
-            Couleur c = m_clients[indexClient].getCol()[indexCouleur];
-            c.setNom(newCol->getNom());
-            c.setDesc(newCol->getDesc());
-
-            c.col.setRed  (newCol->col.red());
-            c.col.setGreen(newCol->col.green());
-            c.col.setBlue (newCol->col.blue());
+            if(indexCouleur >= 0)
+            {
+                m_clients[indexClient].modCol(indexCouleur, *newCol);
+            }
+            else QMessageBox::warning(this, "", "Pas de couleur selectionnee");
         }
+        else QMessageBox::warning(this, "", "Pas de client selectionne");
 
         debugOut("Reception de modification couleur");
 
         actuGrilleCouleur();
         delete newCol;
     }
-
-    QMessageBox::information(this, "", "Nombre couleur : " + QString::number(m_clients[ui->listeClient->currentRow()].getCol().size()));
 }
 
 void MainWindow::actuGrilleCouleur()
@@ -336,9 +370,11 @@ void MainWindow::actuGrilleCouleur()
     int i;
 
     /* Nettoyage de la grille d'affichage précedente */
-        for(i= 0; i< n; i++)
+        for(i= 0; i< Grille_Couleur.size(); i++)
         {
-            Grille_Couleur.value(i)->deleteLater();
+            Grille_Couleur[i]->setHidden(true);
+            QObject::disconnect(Grille_Couleur[i], SIGNAL(clicked()), this, SLOT(afficher_CouleurCourante()));
+            delete Grille_Couleur[i];
         }
         Grille_Couleur.clear();
 
@@ -359,8 +395,8 @@ void MainWindow::actuGrilleCouleur()
                               );
 
         /* Algo pour afficher les boutons ainsi obtenus sous forme de grille (de taille variable) */
-            but->setGeometry(x, y, w/(n*0.5), h/(n*0.5));
-
+            //but->setGeometry(x, y, w/(n*0.5), h/(n*0.5));
+            but->setGeometry(x, y, 15, 15);
             // Si on atteind le bord droite
             if(x + 2*but->width() >= w)
             {
@@ -377,6 +413,8 @@ void MainWindow::actuGrilleCouleur()
         Grille_Couleur.last()->show();
         QObject::connect(Grille_Couleur.last(), SIGNAL(clicked()), this, SLOT(afficher_CouleurCourante()));
     }
+
+    majCol();
 }
 
 void MainWindow::copyColor() const

@@ -25,6 +25,7 @@ public:
 
     void addClient(const Client&);
     void actuGrilleCouleur();
+    void majCol();
 
 
 public slots:

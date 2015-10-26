@@ -3,7 +3,7 @@
 
 ColorWindowAdd::ColorWindowAdd(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::ColorWindowAdd), r(0), g(0), b(0), modif(false)
+    ui(new Ui::ColorWindowAdd), r(0), g(0), b(0)
 {
     ui->setupUi(this);
     QObject::connect(ui->btn_ok, SIGNAL(clicked()), parent, SLOT(getCouleur()));
@@ -13,10 +13,11 @@ ColorWindowAdd::ColorWindowAdd(QWidget *parent) :
 
 ColorWindowAdd::ColorWindowAdd(const Couleur& c, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::ColorWindowAdd), r(c.col.red()), g(c.col.green()), b(c.col.blue()), modif(true)
+    ui(new Ui::ColorWindowAdd), r(c.col.red()), g(c.col.green()), b(c.col.blue())
 {
     ui->setupUi(this);
     QObject::connect(ui->btn_ok, SIGNAL(clicked()), parent, SLOT(modCol()));
+    QObject::connect(this, SIGNAL(accepted()), parent, SLOT(modCol()));
     init();
 
     ui->in_titre->setText(c.getNom());
@@ -37,14 +38,11 @@ ColorWindowAdd::ColorWindowAdd(const Couleur& c, QWidget *parent) :
 
 ColorWindowAdd::~ColorWindowAdd()
 {
-    qDebug() << "FERME";
     delete ui;
 }
 
 void ColorWindowAdd::init()
 {
-    qDebug() << "OUVERT";
-
     ui->in_rouge->setValidator(new QIntValidator(0, 255, this));
     ui->in_vert->setValidator(new QIntValidator(0, 255, this));
     ui->in_bleu->setValidator(new QIntValidator(0, 255, this));

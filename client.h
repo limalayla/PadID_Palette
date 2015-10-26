@@ -26,6 +26,9 @@ public:
     QString getNom() const;
     QString getFP()  const;
     QVector<Couleur> getCol() const;
+    void modCol(int index, const Couleur& c);
+    void delCol(int index);
+
 
     static Client* loadFromFile(const QString&);
     static bool    saveToFile  (const Client&);

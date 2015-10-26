@@ -147,6 +147,21 @@ void Client::addColor(const Couleur& c)
     m_colorlist.push_back(c);
 }
 
+void Client::modCol(int index, const Couleur& c)
+{
+    if(index < m_colorlist.size())
+    {
+        m_colorlist.replace(index, c);
+    }
+}
+
+void Client::delCol(int index)
+{
+    if(index < m_colorlist.size())
+    {
+        m_colorlist.remove(index);
+    }
+}
 
 bool Client::saveToFile(const Client& c)
 {
