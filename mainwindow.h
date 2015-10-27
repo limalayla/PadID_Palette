@@ -44,7 +44,7 @@ public slots:
     void getCouleur();
 
     void setClientSelected(bool b);
-    void copyColor() const;
+    void copyColor();
     void modCol();
 
     void debugOut(const QString& msg);

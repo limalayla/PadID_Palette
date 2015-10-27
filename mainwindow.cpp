@@ -178,6 +178,7 @@ void MainWindow::majCol()
             setClientSelected(false);
             ui->btn_clientDel->setEnabled(true);
             ui->btn_clientProp->setEnabled(true);
+            ui->btn_colorAdd->setEnabled(true);
             ui->listeEncodage->clear();
         }
     }
@@ -417,8 +418,16 @@ void MainWindow::actuGrilleCouleur()
     majCol();
 }
 
-void MainWindow::copyColor() const
+void MainWindow::copyColor()
 {
-    if(ui->listeEncodage->currentItem() != NULL)
-        QApplication::clipboard()->setText(ui->listeEncodage->currentItem()->text());
+    if(indexClient >= 0)
+    {
+        if(indexCouleur >= 0)
+        {
+            if(ui->listeEncodage->currentItem() != NULL)
+                QApplication::clipboard()->setText(ui->listeEncodage->currentItem()->text());
+        }
+        else QMessageBox::warning(this, "", "Pas de couleur selectionnee");
+    }
+    else QMessageBox::warning(this, "", "Pas de client selectionne");
 }
